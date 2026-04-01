@@ -69,3 +69,15 @@ Pada fase ini, dataset berlabel hasil Fase 1 digunakan untuk melatih model pende
 ---
 
 ## 📁 Struktur Repositori
+```
+├── [Clustering]_Submission_Akhir_BMLP_Muhamad...ipynb  # Fase 1: Pembersihan Data hingga Clustering
+├── [Klasifikasi]_Submission_Akhir_BMLP_Muhamad...ipynb # Fase 2: Pemodelan Klasifikasi hingga Tuning
+├── data_clustering.csv                                  # Dataset hasil preprocessing & clustering
+├── data_clustering_inverse.csv                          # Dataset hasil inverse transform (penghubung Fase 1 & 2)
+├── model_clustering.h5                                  # Model K-Means tersimpan
+├── PCA_model_clustering.h5                              # Model PCA tersimpan
+├── decision_tree_model.h5                               # Model Decision Tree tersimpan
+├── explore_random_forest_classification.h5              # Model Random Forest (eksplorasi) tersimpan
+├── tuning_classification.h5                             # Model Random Forest setelah Hyperparameter Tuning
+└── README.md
+```
