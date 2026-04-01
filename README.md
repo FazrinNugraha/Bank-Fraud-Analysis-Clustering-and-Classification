@@ -1,62 +1,71 @@
-Prediksi Laba UMKM dengan Regresi Linear
-========================================
+# End-to-End Bank Transaction Behavior Segmentation & Fraud Detection
 
-Deskripsi Proyek
-----------------
+## 📋 Deskripsi Proyek
 
-Repositori ini berisi analisis data dan kode untuk memprediksi laba Usaha Mikro, Kecil, dan Menengah (UMKM) menggunakan algoritma Regresi Linear. Pemodelan prediksi dibangun berdasarkan berbagai faktor utama bisnis, dengan fokus pada aset, omset, dan biaya operasional (karyawan). Proyek ini bertujuan untuk memberikan wawasan terkait variabel-variabel yang paling memengaruhi tingkat keuntungan UMKM.
+Repositori ini merupakan **Submission Tugas Akhir (Capstone)** untuk **Basic Machine Learning Program (BMLP)**. Analisis ini menggunakan dataset *Bank Transaction for Fraud Detection* untuk membangun sistem Machine Learning yang komprehensif melalui **End-to-End Pipeline**.
 
-Persyaratan Sistem
-------------------
+Alih-alih langsung menebak anomali, proyek ini menggunakan **pendekatan dua tahap**:
+
+1. **Unsupervised Learning (Segmentasi/Clustering)** — Memetakan profil perilaku transaksi nasabah untuk memahami pola wajar (*normal behavior*) versus pola dinamis.
+2. **Supervised Learning (Klasifikasi)** — Membangun model prediktif berdasarkan profil yang sudah dikelompokkan untuk mendeteksi transaksi penipuan (*fraud detection*).
+
+---
+
+## ⚙️ Persyaratan Sistem
 
 Pastikan lingkungan kerja Anda telah memasang perangkat lunak dan pustaka berikut sebelum menjalankan proyek:
 
-*   Python 3.x
-    
-*   Jupyter Notebook atau Google Colab
-    
-*   Pandas
-    
-*   NumPy
-    
-*   Matplotlib
-    
-*   Seaborn
-    
-*   Scikit-Learn
-    
+- Python 3.x
+- Jupyter Notebook atau Google Colab
+- Pandas
+- NumPy
+- Matplotlib
+- Seaborn
+- Yellowbrick (`KElbowVisualizer`)
+- Scikit-Learn
+- Joblib
 
-Cara Penggunaan
----------------
+---
 
-Ikuti langkah-langkah di bawah ini untuk menjalankan kode analisis:
+## 🚀 Cara Penggunaan
 
-*   Unduh atau lakukan _clone_ repositori ini ke komputer lokal Anda.
-    
-*   Buka fail notebook UMKM (1).ipynb menggunakan aplikasi Jupyter Notebook atau unggah fail tersebut ke Google Colab.
-    
-*   Pastikan dataset dataset\_umkm.csv sudah tersedia. Sesuaikan _path_ atau direktori fail dataset pada blok kode pembacaan data jika diperlukan.
-    
-*   Jalankan blok kode secara berurutan mulai dari impor pustaka, pemuatan data, prapemrosesan, hingga evaluasi model regresi.
-    
+Ikuti langkah-langkah berikut untuk menjalankan proyek secara menyeluruh:
 
-Tahapan Analisis dan Pemodelan
-------------------------------
+1. Unduh atau lakukan *clone* repositori ini ke komputer lokal Anda.
+2. Buka dan jalankan file `1_Unsupervised_Customer_Segmentation.ipynb` secara berurutan (*Run All*) untuk memahami proses terbentuknya profil nasabah. Pastikan dataset mentah tersedia di direktori yang sama.
+3. Setelah file `data_clustering_inverse.csv` berhasil diekspor dari notebook pertama, buka file `2_Supervised_Fraud_Classification.ipynb`.
+4. Jalankan sel kode secara berurutan untuk melihat perbandingan performa antara model Decision Tree dan model Random Forest yang telah di-tuning.
 
-Proyek ini mencakup beberapa proses utama untuk memastikan model dapat memprediksi laba secara optimal:
+---
 
-*   **Eksplorasi Data (EDA)**: Meninjau struktur dataset, jumlah fitur, tipe data, serta nilai statistik deskriptif dari data UMKM.
-    
-*   **Prapemrosesan Data**:
-    
-    *   Melakukan konversi tipe data pada kolom numerik yang terdeteksi sebagai teks.
-        
-    *   Mengatasi nilai yang hilang (_missing values_) dengan menggunakan nilai median untuk variabel numerik dan nilai modus untuk variabel kategorikal.
-        
-    *   Membuang kolom yang tidak memiliki relevansi terhadap model prediktif (contoh: ID UMKM dan Nama Usaha).
-        
-*   **Penanganan Pencilan (**_**Outlier**_**)**: Mendeteksi dan menghapus pencilan pada variabel laba menggunakan metode Rentang Interkuartil (IQR) agar tidak merusak performa model.
-    
-*   **Transformasi Data**: Menerapkan transformasi logaritmik (_log transformation_) pada variabel laba untuk menormalkan distribusi data.
-    
-*   **Pelatihan Model**: Melatih model Regresi Linear menggunakan variabel independen (seperti aset, omset, dan biaya karyawan) untuk memprediksi variabel dependen (laba), serta mengevaluasi akurasi prediksinya.
+## 🔄 Alur Kerja Proyek (Project Pipeline)
+
+### Fase 1 — Unsupervised Learning (Customer Segmentation)
+
+Pada fase ini, data mentah diproses untuk menemukan klaster pelanggan berdasarkan perilaku transaksinya.
+
+- **Eksplorasi & Pembersihan Data (EDA)**: Menangani *missing values*, menghapus data duplikat, dan men-*drop* kolom identitas yang tidak relevan (seperti ID, IP Address, Date).
+- **Pemrosesan Data (Preprocessing)**: Menerapkan Label Encoding untuk fitur kategorikal, menangani *outliers* (pencilan), melakukan Standard Scaling untuk fitur numerik, serta melakukan *binning* (pengelompokan rentang nilai).
+- **Pemodelan K-Means & PCA**: Menggunakan *Elbow Method* untuk menentukan jumlah klaster optimal (K), melatih model K-Means, serta menerapkan PCA (*Principal Component Analysis*) untuk reduksi dimensi.
+- **Evaluasi & Interpretasi**: Mengevaluasi klaster menggunakan *Silhouette Score*, dan melakukan *Inverse Transform* untuk mengembalikan data ke rentang nilai aslinya agar menghasilkan wawasan bisnis yang mudah dipahami.
+
+> **Luaran Fase 1:** `clustering.h5`, `PCA_model_clustering.h5`, dan `data_clustering_inverse.csv`
+
+---
+
+### Fase 2 — Supervised Learning (Fraud Classification)
+
+Pada fase ini, dataset berlabel hasil Fase 1 digunakan untuk melatih model pendeteksi fraud.
+
+- **Persiapan Data**: Menggunakan `data_clustering_inverse.csv`, kemudian menerapkan *One-Hot Encoding* (`pd.get_dummies`) pada fitur kategorikal agar dapat dibaca oleh algoritma klasifikasi.
+- **Data Splitting**: Membagi dataset menjadi Data Latih (80%) dan Data Uji (20%) dengan parameter `stratify` untuk memastikan proporsi kelas target seimbang.
+- **Pemodelan Dasar**: Melatih model klasifikasi menggunakan algoritma **Decision Tree Classifier**.
+- **Pemodelan Lanjutan**: Membangun model pembanding yang lebih tangguh menggunakan **Random Forest Classifier**.
+- **Hyperparameter Tuning**: Mengoptimalkan model Random Forest menggunakan **GridSearchCV** untuk mencari kombinasi parameter terbaik.
+- **Evaluasi Model**: Mengukur performa seluruh model menggunakan *Classification Report* (Accuracy, Precision, Recall, dan F1-Score).
+
+> **Luaran Fase 2:** `decision_tree_model.h5` dan model Random Forest yang telah di-tuning.
+
+---
+
+## 📁 Struktur Repositori
